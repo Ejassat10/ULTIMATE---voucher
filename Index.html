@@ -12,12 +12,12 @@
       padding: 40px 20px;
     }
     .card {
-      background: #fff;
+      background: white;
       padding: 30px;
       max-width: 420px;
       margin: auto;
       border-radius: 14px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
     }
     .valid {
       color: #1b8f3a;
@@ -36,42 +36,74 @@
     .code {
       font-size: 20px;
       font-weight: bold;
-      letter-spacing: 1px;
       margin-top: 10px;
+      letter-spacing: 1px;
     }
     .small {
       color: #666;
       font-size: 14px;
       margin-top: 10px;
     }
+    img.logo {
+      max-width: 120px;
+      margin-bottom: 15px;
+    }
   </style>
 </head>
 <body>
 
-<div class="card" id="voucher"></div>
+<div class="card" id="voucher">
+  <!-- Voucher content will appear here -->
+</div>
 
 <script>
-  const WEEKLY_CODE = "PADEL-WK03"; // ← change once per week if needed
+  // --- CONFIGURATION ---
+  const WEEKLY_CODE = "PADEL-WK01"; // Change once per week
+  // Optional: add logo URL
+  const LOGO_URL = ""; // e.g., "https://yourdomain.com/logo.png"
 
+  // --- DATE CALCULATIONS ---
   const now = new Date();
-  const endOfDay = new Date();
-  endOfDay.setHours(23,59,59,999);
+  const weekdays = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
+  const months = ["January","February","March","April","May","June","July","August","September","October","November","December"];
 
-  const voucher = document.getElementById("voucher");
+  // Today
+  const todayName = weekdays[now.getDay()];
+  const todayDate = now.getDate();
+  const todayMonth = months[now.getMonth()];
+  const todayYear = now.getFullYear();
+  const formattedToday = `${todayName}, ${todayDate} ${todayMonth} ${todayYear}`;
 
-  if (now <= endOfDay) {
-    voucher.innerHTML = `
+  // Start of week (Monday)
+  const startOfWeek = new Date(now);
+  startOfWeek.setDate(now.getDate() - ((now.getDay() + 6) % 7)); // Monday
+  const endOfWeek = new Date(startOfWeek);
+  endOfWeek.setDate(startOfWeek.getDate() + 6); // Sunday
+  const formattedWeek = `${startOfWeek.getDate()} ${months[startOfWeek.getMonth()]} – ${endOfWeek.getDate()} ${months[endOfWeek.getMonth()]}`;
+
+  // End of week for expiry
+  const expiry = new Date(endOfWeek);
+  expiry.setHours(23,59,59,999);
+
+  // --- DISPLAY VOUCHER ---
+  const voucherDiv = document.getElementById("voucher");
+
+  if (now <= expiry) {
+    voucherDiv.innerHTML = `
+      ${LOGO_URL ? `<img class="logo" src="${LOGO_URL}" alt="Logo">` : ""}
       <div class="valid">✅ VOUCHER VALID</div>
       <div class="discount">10% OFF</div>
       <p>Padel Partner Exclusive</p>
       <div class="code">Code: ${WEEKLY_CODE}</div>
-      <p class="small">Valid until today at 11:59 PM</p>
+      <p class="small">Valid today: ${formattedToday}</p>
+      <p class="small">Valid this week: ${formattedWeek}</p>
       <p class="small">Show this screen at checkout</p>
     `;
   } else {
-    voucher.innerHTML = `
+    voucherDiv.innerHTML = `
+      ${LOGO_URL ? `<img class="logo" src="${LOGO_URL}" alt="Logo">` : ""}
       <div class="expired">❌ VOUCHER EXPIRED</div>
-      <p class="small">This offer was valid until end of day.</p>
+      <p class="small">This offer was valid until Sunday ${endOfWeek.getDate()} ${months[endOfWeek.getMonth()]}</p>
     `;
   }
 </script>
