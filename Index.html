@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Padel Player Voucher</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f4f4;
+      text-align: center;
+      padding: 40px 20px;
+    }
+    .card {
+      background: #fff;
+      padding: 30px;
+      max-width: 420px;
+      margin: auto;
+      border-radius: 14px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+    }
+    .valid {
+      color: #1b8f3a;
+      font-size: 22px;
+      font-weight: bold;
+    }
+    .expired {
+      color: #c0392b;
+      font-size: 22px;
+      font-weight: bold;
+    }
+    .discount {
+      font-size: 36px;
+      margin: 20px 0;
+    }
+    .code {
+      font-size: 20px;
+      font-weight: bold;
+      letter-spacing: 1px;
+      margin-top: 10px;
+    }
+    .small {
+      color: #666;
+      font-size: 14px;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+
+<div class="card" id="voucher"></div>
+
+<script>
+  const WEEKLY_CODE = "PADEL-WK03"; // ← change once per week if needed
+
+  const now = new Date();
+  const endOfDay = new Date();
+  endOfDay.setHours(23,59,59,999);
+
+  const voucher = document.getElementById("voucher");
+
+  if (now <= endOfDay) {
+    voucher.innerHTML = `
+      <div class="valid">✅ VOUCHER VALID</div>
+      <div class="discount">10% OFF</div>
+      <p>Padel Partner Exclusive</p>
+      <div class="code">Code: ${WEEKLY_CODE}</div>
+      <p class="small">Valid until today at 11:59 PM</p>
+      <p class="small">Show this screen at checkout</p>
+    `;
+  } else {
+    voucher.innerHTML = `
+      <div class="expired">❌ VOUCHER EXPIRED</div>
+      <p class="small">This offer was valid until end of day.</p>
+    `;
+  }
+</script>
+
+</body>
+</html>
